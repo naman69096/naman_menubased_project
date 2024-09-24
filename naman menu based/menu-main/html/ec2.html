@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Launch EC2 Instance</title>
+    <style>
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace; /* Monospace font for hacker feel */
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); /* Gradient background */
+            background-size: 200% 200%;
+            animation: gradientBG 15s ease infinite; /* Animate gradient */
+            color: orange; /* Neon orange text */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            align-items: center;
+            height: 100vh;
+            justify-content: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: orange; /* Neon orange text */
+        }
+
+        form {
+            background: #1a1a1a; /* Dark background for form */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.7), 0 0 25px rgba(255, 0, 0, 0.8), 0 0 35px rgba(255, 215, 0, 1); /* Gradient shadow */
+            width: 300px;
+            max-width: 100%; /* Ensure responsiveness on smaller screens */
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 16px;
+            color: orange; /* Neon orange text */
+        }
+
+        input[type="text"], input[type="password"] {
+            width: calc(100% - 22px); /* Adjust width to accommodate padding and border */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 2px solid orange; /* Neon orange border */
+            border-radius: 5px;
+            background: #000; /* Black background for inputs */
+            color: orange; /* Neon orange text */
+            font-size: 14px;
+            box-sizing: border-box; /* Ensure padding and border are included in width */
+        }
+
+        input[type="submit"] {
+            background-color: orange; /* Neon orange background */
+            color: #000000; /* Black text */
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+            box-sizing: border-box; /* Ensure padding is included in width */
+        }
+
+        input[type="submit"]:hover {
+            background-color: #cc8400; /* Slightly darker orange for hover effect */
+        }
+
+        #homeButton {
+            background-color: orange; /* Neon orange background */
+            color: #000000; /* Black text */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        #homeButton:hover {
+            background-color: #cc8400; /* Slightly darker orange for hover effect */
+        }
+    </style>
+</head>
+<body>
+    <button id="homeButton" onclick="window.location.href='index.html'">Home</button>
+    <div>
+        <h1>Launch EC2 Instance</h1>
+        <form action="/cgi-bin/launch_instance.py" method="post">
+            <label for="region">Region:</label>
+            <input type="text" id="region" name="region" required><br>
+
+            <label for="instance_type">Instance Type:</label>
+            <input type="text" id="instance_type" name="instance_type" required><br>
+
+            <label for="ami_id">AMI ID:</label>
+            <input type="text" id="ami_id" name="ami_id" required><br>
+
+            <label for="key_name">Key Pair Name:</label>
+            <input type="text" id="key_name" name="key_name" required><br>
+
+            <label for="access_key">AWS Access Key:</label>
+            <input type="text" id="access_key" name="access_key" required><br>
+
+            <label for="secret_key">AWS Secret Key:</label>
+            <input type="password" id="secret_key" name="secret_key" required><br>
+
+            <input type="submit" value="Launch Instance">
+        </form>
+    </div>
+</body>
+</html>

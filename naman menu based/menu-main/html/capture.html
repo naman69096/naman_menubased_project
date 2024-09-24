@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Capture</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); /* Gradient background */
+            background-size: 200% 200%;
+            animation: gradient 15s ease infinite;
+            font-family: 'Courier New', Courier, monospace;
+            color: #ffffff; /* White text color */
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+            flex-direction: column; /* Vertical layout */
+        }
+
+        h1 {
+            color: #ffffff; /* White text color */
+            margin-top: 20px;
+            font-size: 2em;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px; /* Space between elements */
+        }
+
+        video, canvas {
+            border: 2px solid #ffffff; /* White border */
+            border-radius: 10px;
+            background: #000; /* Black background for video and canvas */
+            box-shadow: 0 4px 10px rgba(0, 255, 0, 0.5); /* Greenish shadow */
+        }
+
+        button {
+            margin: 10px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f); /* Gradient background */
+            color: #ffffff; /* White text color */
+            border: 2px solid #ffffff; /* White border */
+            cursor: pointer;
+            text-align: center;
+            font-size: 18px;
+            border-radius: 8px;
+            transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #003300, #004d00); /* Darker gradient on hover */
+            color: #00ff00; /* Bright green text color on hover */
+            transform: scale(1.05); /* Slightly enlarge button on hover */
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Camera Capture</h1>
+    <div class="container">
+        <video id="video" width="500" height="450" autoplay></video>
+        <button id="capture">Capture Photo</button>
+        <canvas id="canvas" width="500" height="450"></canvas>
+        <button id="home" onclick="window.location.href='index.html'">Home</button>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const captureButton = document.getElementById('capture');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(error => {
+                console.error('Error accessing camera:', error);
+            });
+
+        captureButton.addEventListener('click', () => {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageDataURL = canvas.toDataURL('image/png');
+            console.log(imageDataURL);
+        });
+    </script>
+</body>
+</html>

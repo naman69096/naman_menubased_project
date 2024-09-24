@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live HTML Interpreter</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 200% 200%;
+            animation: gradient 15s ease infinite;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Center align items vertically */
+        }
+
+        /* Header styles */
+        .header {
+            background-color: #ff0000;
+            color: #1a2a6c;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #b21f1f, 0 0 20px #b21f1f;
+        }
+
+        .home-btn {
+            background-color: #1a2a6c;
+            border: none;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+            outline: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .home-btn:hover {
+            background-color: #b21f1f;
+            color: #ffffff;
+        }
+
+        /* Container styles */
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 80%; /* Make container smaller */
+            max-width: 1200px; /* Set max width */
+            height: calc(100vh - 60px); /* Adjust for header height */
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            background-color: #0d0d0d;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .editor-container {
+            display: flex;
+            flex: 1;
+        }
+
+        .editor {
+            flex: 1;
+            padding: 20px;
+            border-right: 2px solid #b21f1f;
+            box-sizing: border-box;
+            overflow-y: auto;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            border-radius: 5px;
+            font-size: 16px;
+            line-height: 1.5;
+            white-space: pre; /* Preserve formatting */
+        }
+
+        .output {
+            flex: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            border-radius: 5px;
+            border: 2px solid #000000;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 0%;
+            }
+            50% {
+                background-position: 100% 100%;
+            }
+            100% {
+                background-position: 0% 0%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Live HTML Interpreter</h1>
+        <button class="home-btn" onclick="goToHome()">Home</button>
+    </div>
+
+    <!-- Main content -->
+    <div class="container">
+        <div class="editor-container">
+            <div class="editor" contenteditable="true" id="htmlInput">
+                <!-- Initial HTML content -->
+            </div>
+            <div class="output" id="htmlOutput"></div>
+        </div>
+    </div>
+
+    <script>
+        // Function to update output with user input HTML
+        function updateOutput() {
+            var htmlInput = document.getElementById('htmlInput').innerText;
+            var htmlOutput = document.getElementById('htmlOutput');
+            htmlOutput.innerHTML = htmlInput;
+        }
+
+        // Update output on input change
+        document.getElementById('htmlInput').addEventListener('input', updateOutput);
+
+        // Function to navigate to Home page
+        function goToHome() {
+            window.location.href = "index.html"; // Change index.html to your home page
+        }
+    </script>
+</body>
+</html>

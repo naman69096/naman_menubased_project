@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello Camera</title>
+    <script src="https://unpkg.com/dynamsoft-camera-enhancer@2.1.0/dist/dce.js"></script>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 200% 200%;
+            animation: gradient 15s ease infinite;
+            color: #ff9900; /* Orange text color */
+            margin: 0;
+            padding: 0;
+            overflow-y: scroll;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        nav {
+            width: 100%;
+            background-color: #b8cc00;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px #ff950080;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #0f0f0f;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #ff9900; /* Hover color to orange */
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 60px; /* Adjust for fixed nav height */
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        #enhancerUIContainer {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .button {
+            background: #ff9d00;
+            color: #0f0f0f;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px #ffa50080; /* Gradient shadow */
+        }
+
+        .button:hover {
+            background: #cce019;
+        }
+
+        .image-container {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .image-container img {
+            width: 200px;
+            height: 200px;
+            margin: 10px;
+            border: 2px solid #b8cc00;
+            box-shadow: 0 2px 8px rgba(255, 165, 0, 0.5); /* Gradient shadow */
+        }
+
+        /* Style the camera UI elements */
+        #enhancerUIContainer {
+            background-color: #0f0f0f;
+            border: 1px solid #b8cc00;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 165, 0, 0.5); /* Gradient shadow */
+        }
+
+        .dce-ui {
+            color: #b8cc00;
+        }
+
+        .dce-ui button {
+            background-color: #b8cc00;
+            color: #0f0f0f;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .dce-ui button:hover {
+            background-color: #b8cc00;
+        }
+
+        .dce-ui input {
+            background-color: #333;
+            color: #b8cc00;
+            border: 1px solid #b8cc00;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .dce-ui input:focus {
+            outline: none;
+            border-color: #b8cc00;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <div id="enhancerUIContainer"></div>
+        <div class="button-container">
+            <button id="capture" class="button">Capture</button>
+        </div>
+        <div class="image-container" id="imageContainer"></div>
+    </div>
+
+    <script>
+        let enhancer = null,
+            images = [];
+
+        (async () => {
+            enhancer = await Dynamsoft.DCE.CameraEnhancer.createInstance();
+            document.getElementById("enhancerUIContainer").appendChild(enhancer.getUIElement());
+            await enhancer.open(true);
+        })();
+
+        document.getElementById('capture').onclick = () => {
+            if (enhancer) {
+                let frame = enhancer.getFrame();
+                let image = document.createElement('img');
+                image.src = frame.canvas.toDataURL();
+                document.getElementById('imageContainer').appendChild(image);
+                images.push(image);
+            }
+        };
+
+        // shuffle the button
+        let buttons = document.querySelectorAll('.button');
+        for (let i = buttons.length - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            [buttons[i], buttons[j]] = [buttons[j], buttons[i]];
+        }
+    </script>
+</body>
+</html>

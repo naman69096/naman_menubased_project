@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Choco</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Custom CSS styles */
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 200% 200%;
+            animation: gradient 15s ease infinite;
+            font-family: 'Courier New', Courier, monospace;
+            color: #ffa500; /* Orange text color */
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .header, .footer {
+            background-color: rgba(0, 0, 0, 0.8); /* Darker translucent background for header and footer */
+            border-bottom: 2px solid #ffa500; /* Orange border */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Text shadow effect */
+        }
+
+        .header h1 {
+            color: #ffa500; /* Orange text */
+        }
+
+        .header button {
+            background-color: #0f0f0f;
+            color: #ffa500;
+            border: 2px solid #ffa500;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .header button:hover {
+            background-color: #ffa500;
+            color: #000000;
+            transform: scale(1.05);
+        }
+
+        .loader {
+            border: 4px solid #000000;
+            border-radius: 50%;
+            border-top: 4px solid #ffa500; /* Orange loader */
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .section {
+            background-color: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ffa500; /* Orange border */
+            box-shadow: 0 0 10px rgba(255, 165, 0, 0.5); /* Orange glow shadow */
+        }
+
+        .section h2 {
+            color: #ffa500;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Text shadow */
+        }
+
+        .section input, .section button {
+            border-radius: 5px;
+            background-color: #000;
+            border: 1px solid #ffa500;
+            color: #ffa500;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .section input::placeholder {
+            color: #ffa500;
+        }
+
+        .section input:focus, .section button:focus {
+            outline: none;
+            border-color: #ffa500;
+        }
+
+        .section button {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .section button:hover {
+            background-color: #ffa500;
+            color: #000;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <header class="header text-center py-6">
+        <h1 class="text-4xl font-bold">Docker Automation</h1>
+        <a href="http://3.108.133.100/myportfolio/">
+            <button class="text-xl">HOME</button>
+        </a>
+    </header>
+
+    <main class="container mx-auto mt-10 px-4">
+        <!-- Docker Images Section -->
+        <section class="section shadow-lg rounded-lg p-8 mb-10">
+            <h2 class="text-3xl font-semibold mb-6">Pulled Images</h2>
+            <div class="flex flex-col md:flex-row items-center md:justify-between mb-6 space-y-4 md:space-y-0">
+                <input type="text" id="imageName" class="border p-3 w-full md:w-auto text-green-500 placeholder-gray-500" placeholder="Enter Image Name">
+                <div class="flex space-x-4">
+                    <button id="pullImage" onclick="PullImage()" class="bg-green-600 hover:bg-green-700">Pull Image</button>
+                    <button id="getAllImages" onclick="GetAllImages()" class="bg-gray-700 hover:bg-gray-600">Get All Images</button>
+                    <button id="showRunningContainers" onclick="getAllRunningContainers()" class="bg-gray-700 hover:bg-gray-600">Show Running Containers</button>
+                    <button id="showAllContainers" onclick="getAllContainers()" class="bg-gray-700 hover:bg-gray-600">Show All Containers</button>
+                    <button id="liveUpdateBtn" onclick="toggleLiveUpdate()" class="bg-yellow-500 hover:bg-yellow-600">Live Update</button>
+                </div>
+            </div>
+            <div id="loading" class="loader mx-auto" style="display: none;"></div>
+            <div id="getOutput" class="border p-4 rounded h-64 overflow-auto bg-gray-900 text-white"></div>
+        </section>
+
+        <!-- Container Management Section -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div class="section shadow-lg rounded-lg p-8">
+                <h2 class="text-2xl font-semibold mb-6">Launch a Container</h2>
+                <input type="text" id="launchAnContainer" class="border p-3 w-full mb-4 text-green-500 placeholder-gray-500" placeholder="Enter Container Name">
+                <button id="launchContainer" onclick="launchAnContainer()" class="bg-green-600 hover:bg-green-700">Launch a Container</button>
+            </div>
+            <div class="section shadow-lg rounded-lg p-8">
+                <h2 class="text-2xl font-semibold mb-6">Start Container</h2>
+                <input type="text" id="containerNameStart" class="border p-3 w-full mb-4 text-green-500 placeholder-gray-500" placeholder="Enter Container Name">
+                <button id="startContainer" onclick="StartContainer()" class="bg-green-600 hover:bg-green-700">Start Container</button>
+            </div>
+            <div class="section shadow-lg rounded-lg p-8">
+                <h2 class="text-2xl font-semibold mb-6">Stop Container</h2>
+                <input type="text" id="containerNameStop" class="border p-3 w-full mb-4 text-green-500 placeholder-gray-500" placeholder="Enter Container Name">
+                <button id="stopContainer" onclick="StopContainer()" class="bg-red-600 hover:bg-red-700">Stop Container</button>
+            </div>
+
+            <div class="section shadow-lg rounded-lg p-8">
+                <h2 class="text-2xl font-semibold mb-6">List Docker Volume</h2>
+                <button id="dockervolume" onclick="dockervolume()" class="bg-red-600 hover:bg-red-700">Docker Volume</button>
+            </div>
+
+            <div class="section shadow-lg rounded-lg p-8">
+                <h2 class="text-2xl font-semibold mb-6">Docker Network</h2>
+                <button id="dockernetwork" onclick="dockernetwork()" class="bg-green-600 hover:bg-green-700">Docker Network</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add your JavaScript functions here (unchanged) -->
+
+</body>
+</html>

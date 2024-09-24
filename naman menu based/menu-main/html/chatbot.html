@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Text Generator</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); /* Grad background */
+            background-size: 200% 200%;
+            animation: gradient 15s ease infinite;
+            color: orange; /* Orange text color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #002b36; /* Dark blue background for the container */
+            border: 2px solid orange; /* Orange border */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.5); /* Orange shadow */
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: orange; /* Orange text */
+            font-size: 2em;
+        }
+
+        textarea {
+            width: 90%;
+            height: 100px;
+            padding: 10px;
+            border: 2px solid orange; /* Orange border */
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: orange; /* Orange text color */
+            background-color: #000000; /* Solid black background */
+            resize: none;
+        }
+
+        button {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); /* Grad background */
+            background-size: 200% 200%;
+            animation: gradient 15s ease infinite;
+            color: orange; /* Orange text color */
+            border: 2px solid orange; /* Orange border */
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: orange; /* Orange background on hover */
+            color: #b21f1f; /* Dark red text color on hover */
+            transform: scale(1.05); /* Slightly enlarge button on hover */
+        }
+
+        #responseContainer {
+            margin-top: 20px;
+            padding: 10px;
+            border-top: 2px solid orange; /* Orange border */
+            text-align: left;
+            font-size: 16px;
+            color: orange; /* Orange text color */
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: #000000; /* Solid black background */
+        }
+
+        #homeButton {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); /* Grad background */
+            background-size: 200% 200%;
+            animation: gradient 15s ease infinite;
+            color: orange; /* Orange text color */
+            border: 2px solid orange; /* Orange border */
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 18px;
+            width: 120px;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+            margin: 20px auto; /* Centering the button */
+            display: block;
+        }
+
+        #homeButton:hover {
+            background-color: orange; /* Orange background on hover */
+            color: #b21f1f; /* Dark red text color on hover */
+            transform: scale(1.05); /* Slightly enlarge button on hover */
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="homeButton" onclick="window.location.href='index.html'">Home</button>
+        <h1>AI Text Generator</h1>
+        <textarea id="prompt" placeholder="Enter your prompt here..."></textarea>
+        <button id="generateButton">Generate</button>
+        <div id="responseContainer"></div>
+    </div>
+
+    <script>
+        document.getElementById('generateButton').addEventListener('click', function() {
+            var prompt = document.getElementById('prompt').value;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/cgi-bin/gemini_chat.py', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById('responseContainer').innerText = xhr.responseText;
+                }
+            };
+
+            xhr.send('prompt=' + encodeURIComponent(prompt));
+        });
+    </script>
+</body>
+</html>

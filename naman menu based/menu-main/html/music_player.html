@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Music Player</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            height: 100%;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 200% 200%;
+            animation: gradient 15s ease infinite;
+            color: orange; /* Orange text */
+            overflow-y: auto; /* Allow vertical scrolling on body */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 20px; /* Center the container and add margins */
+            background: linear-gradient(135deg, rgba(51, 51, 51, 0.9), rgba(0, 0, 0, 0.8));
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            max-height: calc(100vh - 40px); /* Limit container height to avoid overflow */
+            overflow-y: auto; /* Enable vertical scrolling */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content */
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: orange; /* Orange */
+            text-shadow: 0 0 10px #fdbb2d, 0 0 20px #b21f1f; /* Grad shadow effect */
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .controls button {
+            background-color: orange; /* Orange */
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            color: #000;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .controls button:hover {
+            background-color: #ff9933; /* Slightly darker orange */
+        }
+
+        .player {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .player input[type=file] {
+            margin-bottom: 10px;
+        }
+
+        .playlist-section {
+            margin-top: 20px;
+            text-align: center; /* Center the text */
+        }
+
+        .playlist-section h2 {
+            margin-bottom: 10px;
+        }
+
+        .playlist-section input[type=text] {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            width: calc(100% - 140px);
+        }
+
+        .playlist-section button {
+            background-color: orange; /* Orange */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: #000;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .playlist-section button:hover {
+            background-color: #ff9933; /* Slightly darker orange */
+        }
+
+        .playlist-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .playlist-section li {
+            padding: 10px;
+            border-bottom: 1px solid #444;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .playlist-section li:hover {
+            background-color: #555;
+            transform: scale(1.02);
+        }
+
+        .playlist-section li.selected {
+            background-color: #666;
+        }
+
+        .progress-container {
+            margin: 20px 0;
+            background-color: #444;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 8px;
+            background-color: orange; /* Orange progress */
+            width: 0;
+            border-radius: 5px;
+            transition: width 0.1s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .controls button.active {
+            animation: pulse 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Advanced Music Player</h1>
+        <div class="player">
+            <input type="file" id="file-input" accept="audio/*" multiple />
+            <div class="controls">
+                <button id="play">Play</button>
+                <button id="rewind">Rewind</button>
+                <button id="shuffle">Shuffle</button>
+            </div>
+            <div class="progress-container">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        <div class="playlist-section">
+            <h2>Playlists</h2>
+            <input type="text" id="playlist-name" placeholder="Enter playlist name" />
+            <button id="create-playlist">Create Playlist</button>
+            <div id="playlists">
+                <!-- Playlists will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audio = new Audio();
+        const playButton = document.getElementById('play');
+        const rewindButton = document.getElementById('rewind');
+        const shuffleButton = document.getElementById('shuffle');
+        const progress = document.getElementById('progress');
+        const fileInput = document.getElementById('file-input');
+        const playlistNameInput = document.getElementById('playlist-name');
+        const createPlaylistButton = document.getElementById('create-playlist');
+        const playlistsContainer = document.getElementById('playlists');
+
+        let isPlaying = false;
+        let isShuffle = false;
+        let playlists = {};
+        let currentPlaylist = [];
+        let currentIndex = -1;
+
+        function updateProgress() {
+            if (audio.duration) {
+                const progressPercent = (audio.currentTime / audio.duration) * 100;
+                progress.style.width = `${progressPercent}%`;
+            }
+        }
+
+        function playPause() {
+            if (isPlaying) {
+                audio.pause();
+                playButton.textContent = 'Play';
+                playButton.classList.remove('active');
+            } else {
+                if (currentPlaylist.length > 0) {
+                    audio.src = currentPlaylist[currentIndex].url;
+                    audio.play().catch(err => console.error('Error playing audio:', err));
+                    playButton.textContent = 'Pause';
+                    playButton.classList.add('active');
+                }
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function rewind() {
+            audio.currentTime = 0;
+        }
+
+        function shuffle() {
+            isShuffle = !isShuffle;
+            shuffleButton.style.backgroundColor = isShuffle ? '#0056b3' : 'orange';
+            if (isShuffle) {
+                currentPlaylist.sort(() => Math.random() - 0.5);
+                currentIndex = -1;
+                loadNextSong();
+            }
+        }
+
+        function loadSong(index) {
+            currentIndex = index;
+            audio.src = currentPlaylist[index].url;
+            playPause();
+        }
+
+        function loadNextSong() {
+            if (currentPlaylist.length === 0) return;
+            currentIndex = (currentIndex + 1) % currentPlaylist.length;
+            loadSong(currentIndex);
+        }
+
+        function updatePlaylists() {
+            playlistsContainer.innerHTML = '';
+            Object.keys(playlists).forEach(playlistName => {
+                const playlist = playlists[playlistName];
+                const playlistElement = document.createElement('div');
+                playlistElement.classList.add('playlist');
+                playlistElement.innerHTML = `<h3>${playlistName}</h3><ul></ul>`;
+                
+                playlist.songs.forEach((song, index) => {
+                    const li = document.createElement('li');
+                    li.textContent = song.title;
+                    li.onclick = () => {
+                        currentPlaylist = playlist.songs;
+                        currentIndex = index;
+                        loadSong(index);
+                    };
+                    playlistElement.querySelector('ul').appendChild(li);
+                });
+
+                playlistsContainer.appendChild(playlistElement);
+            });
+        }
+
+        fileInput.addEventListener('change', (event) => {
+            const files = Array.from(event.target.files);
+            if (files.length > 0) {
+                const currentPlaylistName = Object.keys(playlists)[0];
+                if (files.length === 1) {
+                    // If one song is selected, play it directly
+                    const file = files[0];
+                    const url = URL.createObjectURL(file);
+                    audio.src = url;
+                    audio.play().catch(err => console.error('Error playing audio:', err));
+                } else if (files.length > 1 && currentPlaylistName) {
+                    // Add multiple songs to the current playlist
+                    files.forEach(file => {
+                        const url = URL.createObjectURL(file);
+                        const song = { title: file.name, url: url };
+                        playlists[currentPlaylistName].songs.push(song);
+                    });
+                    updatePlaylists();
+                }
+            }
+        });
+
+        createPlaylistButton.addEventListener('click', () => {
+            const playlistName = playlistNameInput.value.trim();
+            if (playlistName && !playlists[playlistName]) {
+                playlists[playlistName] = { songs: [] };
+                playlistNameInput.value = '';
+                updatePlaylists();
+            }
+        });
+
+        playButton.addEventListener('click', playPause);
+        rewindButton.addEventListener('click', rewind);
+        shuffleButton.addEventListener('click', shuffle);
+
+        audio.addEventListener('timeupdate', updateProgress);
+        audio.addEventListener('ended', loadNextSong);
+
+        // Initial setup
+        updatePlaylists();
+    </script>
+</body>
+</html>

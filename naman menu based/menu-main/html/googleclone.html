@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Google Page</title>
+    <style>
+        body {
+            font-family: arial, sans-serif;
+            margin: 0;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        section .searchArea {
+            margin-top: 100px;
+        }
+
+        section .searchArea .logo img {
+            height: 72px;
+        }
+
+        section .searchArea .searchBox {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        section .searchArea .searchBox .searchBar {
+            width: 300px;
+        }
+
+        section .searchArea .searchBox .searchBar .search {
+            background: #ffffff;
+            border: 1px solid #dfe1e5;
+            box-shadow: none;
+            border-radius: 24px;
+            z-index: 3;
+            height: 32px;
+            width: 100%;
+            padding-left: 10px;
+            padding-right: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        section .searchArea .searchBox .searchBar .search input {
+            border: none;
+            background-color: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        section .searchArea .searchButtons button {
+            background-color: #f2f2f2;
+            border: 1px solid #f2f2f2;
+            border-radius: 4px;
+            color: #5F6368;
+            font-size: 14px;
+            margin: 15px 4px;
+            padding: 0 16px;
+            height: 36px;
+            cursor: pointer;
+        }
+
+        section .searchArea .searchButtons button:hover {
+            background-color: #f8f8f8;
+            border: 1px solid #c6c6c6;
+            color: #222;
+        }
+    </style>
+    <script>
+        function searchGoogle() {
+            const query = document.getElementById('searchInput').value;
+            if (query) {
+                const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                window.location.href = url;
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                searchGoogle();
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <section>
+        <div class="searchArea">
+            <div class="logo">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google Logo">
+            </div>
+            <div class="searchBox">
+                <div class="searchBar">
+                    <div class="search">
+                        <input type="text" id="searchInput" onkeypress="handleKeyPress(event)" placeholder="Search Google or type a URL" />
+                    </div>
+                </div>
+            </div>
+            <div class="searchButtons">
+                <button onclick="searchGoogle()">Google Search</button>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
